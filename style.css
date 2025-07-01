@@ -1,300 +1,190 @@
+/* style.css */
+
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: #f0f0f0;
+    background-color: #282c34;
+    color: #f8f8f2;
     margin: 0;
-    padding: 20px;
-    box-sizing: border-box;
 }
 
 .metronome-container {
-    background-color: #fff;
+    background-color: #3b3e47;
     padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
     text-align: center;
-    width: 350px;
-    max-width: 100%;
-    box-sizing: border-box;
+    width: 90%;
+    max-width: 500px;
 }
 
 h1 {
-    color: #333;
-    margin-bottom: 20px;
-    font-size: 1.8em;
+    color: #61dafb;
+    margin-bottom: 25px;
 }
 
 .input-settings {
-    margin-top: 0;
-    padding-top: 0;
-    border-top: none;
+    background-color: #4a4e59;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 25px;
     text-align: left;
 }
 
 .input-settings h2 {
+    color: #f8f8f2;
+    margin-top: 0;
+    margin-bottom: 15px;
     text-align: center;
-    margin-bottom: 20px;
-    color: #444;
-    font-size: 1.4em;
+    font-size: 1.2em;
 }
 
 .input-group {
-    margin-bottom: 15px;
     display: flex;
     align-items: center;
-    flex-wrap: wrap;
+    margin-bottom: 15px;
 }
 
 .input-group label {
     flex: 1;
-    text-align: right;
-    padding-right: 10px;
-    font-size: 1em;
-    min-width: 90px;
+    margin-right: 10px;
+    color: #a0a8b9;
+    font-size: 0.9em;
 }
 
 .input-group input[type="text"],
-.input-group input[type="number"] {
+.input-group input[type="number"],
+.input-group select {
     flex: 2;
     padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    border: none;
+    border-radius: 5px;
+    background-color: #5b606c;
+    color: #f8f8f2;
     font-size: 1em;
-    min-width: 150px;
-    box-sizing: border-box;
+    outline: none;
 }
 
-.input-group.checkbox-group {
-    justify-content: center;
-    flex-wrap: nowrap;
+.input-group input[type="text"]:focus,
+.input-group input[type="number"]:focus,
+.input-group select:focus {
+    box-shadow: 0 0 0 2px #61dafb;
 }
 
-.input-group.checkbox-group input[type="checkbox"] {
-    flex: none;
-    width: auto;
-    margin-right: 8px;
+.checkbox-group {
+    justify-content: flex-start;
+    margin-bottom: 20px;
 }
 
-.input-group.checkbox-group label {
-    flex: none;
-    text-align: left;
-    padding-right: 0;
+.checkbox-group input[type="checkbox"] {
+    margin-right: 10px;
+    transform: scale(1.2);
+    /* 체크박스 크기 키우기 */
 }
 
 #apply-settings-btn {
-    display: block;
-    width: 100%;
-    margin-top: 20px;
-    padding: 12px 20px;
-    font-size: 1.1em;
-    background-color: #28a745;
-    color: white;
+    background-color: #61dafb;
+    color: #282c34;
     border: none;
-    border-radius: 5px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 1em;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.2s ease;
+    width: 100%;
 }
 
 #apply-settings-btn:hover {
-    background-color: #218838;
+    background-color: #21a1f1;
 }
 
 .controls {
-    margin-top: 30px;
-    margin-bottom: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
-    border-top: 1px solid #eee;
-    padding-top: 20px;
-    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 30px;
 }
 
 .controls label {
+    color: #f8f8f2;
     font-size: 1.1em;
-    margin-right: 10px;
 }
 
 .controls input[type="number"] {
     width: 80px;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1em;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background-color: #5b606c;
+    color: #f8f8f2;
+    font-size: 1.1em;
     text-align: center;
-    margin-right: 10px;
-    box-sizing: border-box;
+    outline: none;
 }
 
-button {
-    padding: 10px 20px;
-    font-size: 1em;
-    cursor: pointer;
-    background-color: #007bff;
+.controls input[type="number"]:focus {
+    box-shadow: 0 0 0 2px #61dafb;
+}
+
+.controls button {
+    background-color: #4CAF50;
     color: white;
     border: none;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
+    padding: 10px 25px;
+    border-radius: 8px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
-button:hover {
-    background-color: #0056b3;
+.controls button:hover {
+    background-color: #45a049;
 }
 
 #click-feedback {
     width: 20px;
     height: 20px;
-    background-color: transparent;
+    background-color: #61dafb;
     border-radius: 50%;
-    margin: 15px auto;
-    transition: background-color 0.1s ease-out;
+    margin: 0 auto 20px auto;
+    opacity: 0;
+    transition: opacity 0.1s ease-out;
 }
 
 #click-feedback.active {
-    background-color: #ffc107;
+    opacity: 1;
 }
 
 .bar-counter {
-    margin-top: 25px;
-    font-size: 1.1em;
-    color: #555;
-    border-top: 1px solid #eee;
-    padding-top: 20px;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #61dafb;
+    margin-bottom: 20px;
 }
 
 .random-string-display {
-    margin-top: 25px;
-    padding: 15px;
-    border: 2px dashed #ccc;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-    min-height: 80px;
+    background-color: #282c34;
+    padding: 20px;
+    border-radius: 10px;
+    min-height: 50px;
+    /* 최소 높이 설정 */
     display: flex;
-    justify-content: center;
     align-items: center;
-    overflow-x: hidden;
-    white-space: nowrap;
-    /* 한 줄로 표시, 넘치는 부분 숨김 */
+    justify-content: center;
 }
 
 #random-chars-output {
-    /* 이전 font-size: 15vw; 대신 calc()와 min() 조합으로 크기 조절 */
-    font-size: min(15vw, 60px);
-    /* 뷰포트 너비의 15% 또는 최대 60px (조절 가능) */
-    line-height: 1;
+    font-size: 3em;
+    /* 글자 크기 더 크게 */
     font-weight: bold;
-    color: #28a745;
+    color: #ffffff;
     margin: 0;
-    /* word-break: break-all; 제거 (white-space: nowrap 때문에 불필요) */
-    /* white-space: nowrap; // 부모 요소로 이동 */
-    overflow: hidden;
-    /* 넘치는 부분 숨김 */
-    text-overflow: clip;
-    /* 넘치는 텍스트는 자름 */
-    max-width: 100%;
-    /* 부모 너비를 넘지 않도록 (텍스트 자체가 넘치는 것은 overflow로 처리) */
-}
-
-
-/* 스마트폰 화면 (최대 600px 너비) */
-@media (max-width: 600px) {
-    body {
-        padding: 10px;
-    }
-
-    .metronome-container {
-        padding: 20px;
-        width: 100%;
-        border-radius: 0;
-        box-shadow: none;
-    }
-
-    h1 {
-        font-size: 1.6em;
-    }
-
-    .input-settings h2 {
-        font-size: 1.2em;
-    }
-
-    .input-group {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .input-group label {
-        text-align: left;
-        padding-right: 0;
-        margin-bottom: 5px;
-        width: 100%;
-        min-width: unset;
-    }
-
-    .input-group input[type="text"],
-    .input-group input[type="number"] {
-        width: 100%;
-        min-width: unset;
-    }
-
-    .input-group.checkbox-group {
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-        margin-top: 10px;
-    }
-
-    .input-group.checkbox-group label {
-        margin-bottom: 0;
-    }
-
-    #apply-settings-btn {
-        font-size: 1em;
-        padding: 10px 15px;
-    }
-
-    .controls {
-        flex-direction: column;
-        padding-top: 15px;
-    }
-
-    .controls label {
-        margin-right: 0;
-        margin-bottom: 10px;
-    }
-
-    .controls input[type="number"] {
-        width: 100px;
-        margin-right: 0;
-        margin-bottom: 15px;
-    }
-
-    button {
-        width: 100%;
-        padding: 12px;
-        font-size: 1.1em;
-    }
-
-    #click-feedback {
-        margin: 10px auto;
-    }
-
-    .bar-counter {
-        font-size: 1em;
-        padding-top: 15px;
-    }
-
-    .random-string-display {
-        padding: 10px;
-        min-height: 60px;
-    }
-
-    #random-chars-output {
-        /* 스마트폰에서도 같은 로직 적용 */
-        font-size: min(20vw, 60px);
-        /* 스마트폰에서는 조금 더 크게 시작하거나, 동일하게 15vw 유지 */
-        /* white-space, overflow, text-overflow는 부모에서 처리 */
-    }
+    /* --- 추가된 부분 시작 --- */
+    letter-spacing: 0.15em;
+    /* 여기에서 자간 조절 (0.1em은 예시, 필요에 따라 조절) */
+    /* --- 추가된 부분 끝 --- */
 }
