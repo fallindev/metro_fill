@@ -14,8 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const uniqueCharsCheckbox = document.getElementById('unique-chars-checkbox');
     const applySettingsBtn = document.getElementById('apply-settings-btn');
     const voiceSelect = document.getElementById('voice-select');
-    // --- 추가된 부분 ---
     const ttsRateInput = document.getElementById('tts-rate-input');
+    // --- 추가된 부분 ---
+    const enableTtsCheckbox = document.getElementById('enable-tts-checkbox');
     // --- 추가된 부분 끝 ---
 
     let bpm = parseInt(bpmInput.value);
@@ -24,7 +25,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentBeat = 0;
     const beatsPerBar = 4;
 
-    let charsToChooseFrom = charsInput.value;
+    let rawCharsInput = charsInput.value;
+    let charsToChooseFrom = parseCharsInput(rawCharsInput);
+
     let displayLength = parseInt(displayLengthInput.value);
     let displayIntervalBars = parseInt(intervalBarsInput.value);
     let useUniqueChars = uniqueCharsCheckbox.checked;
@@ -35,8 +38,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let voices = [];
     let selectedVoice = null;
 
-    // TTS_RATE는 이제 입력 필드에서 값을 가져옵니다.
     let ttsRate = parseFloat(ttsRateInput.value);
+    // --- 추가된 부분 ---
+    let enableTts = enableTtsCheckbox.checked; // 음성 출력 여부 초기값
+    // --- 추가된 부분 끝 ---
     const TTS_PITCH = 1.0;
 
     if ('speechSynthesis' in window) {
@@ -83,8 +88,9 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         console.warn("Web Speech API (Speech Synthesis) not supported in this browser.");
         voiceSelect.parentElement.style.display = 'none';
-        // TTS 속도 입력 필드도 숨기기
         ttsRateInput.parentElement.style.display = 'none';
+        // TTS 미지원 시 음성 출력 체크박스도 숨기기
+        enableTtsCheckbox.parentElement.style.display = 'none';
     }
     // --- TTS 관련 끝 ---
 
@@ -101,6 +107,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function parseCharsInput(inputString) {
+        return inputString.split(',').map(char => char.trim()).filter(char => char.length > 0);
+    }
+
     // --- 설정 저장 함수 ---
     function saveSettings() {
         localStorage.setItem('metronomeBpm', bpmInput.value);
@@ -111,8 +121,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (selectedVoice) {
             localStorage.setItem('selectedVoiceName', selectedVoice.name);
         }
-        // --- 추가된 부분 ---
         localStorage.setItem('metronomeTtsRate', ttsRateInput.value);
+        // --- 추가된 부분 ---
+        localStorage.setItem('metronomeEnableTts', enableTtsCheckbox.checked);
         // --- 추가된 부분 끝 ---
     }
 
@@ -124,8 +135,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const savedIntervalBars = localStorage.getItem('metronomeIntervalBars');
         const savedUniqueChars = localStorage.getItem('metronomeUniqueChars');
         const savedVoiceName = localStorage.getItem('selectedVoiceName');
-        // --- 추가된 부분 ---
         const savedTtsRate = localStorage.getItem('metronomeTtsRate');
+        // --- 추가된 부분 ---
+        const savedEnableTts = localStorage.getItem('metronomeEnableTts');
         // --- 추가된 부분 끝 ---
 
         if (savedBpm !== null) {
@@ -134,7 +146,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (savedChars !== null) {
             charsInput.value = savedChars;
-            charsToChooseFrom = savedChars;
+            rawCharsInput = savedChars;
+            charsToChooseFrom = parseCharsInput(rawCharsInput);
         }
         if (savedDisplayLength !== null) {
             displayLengthInput.value = savedDisplayLength;
@@ -148,24 +161,35 @@ document.addEventListener('DOMContentLoaded', () => {
             uniqueCharsCheckbox.checked = (savedUniqueChars === 'true');
             useUniqueChars = (savedUniqueChars === 'true');
         }
-        // --- 추가된 부분 ---
         if (savedTtsRate !== null) {
             ttsRateInput.value = savedTtsRate;
             ttsRate = parseFloat(savedTtsRate);
         }
+        // --- 추가된 부분 ---
+        if (savedEnableTts !== null) {
+            enableTtsCheckbox.checked = (savedEnableTts === 'true');
+            enableTts = (savedEnableTts === 'true');
+            // 음성 출력이 비활성화되어 있다면, 목소리 선택 및 속도 입력 필드를 비활성화
+            voiceSelect.disabled = !enableTts;
+            ttsRateInput.disabled = !enableTts;
+        }
         // --- 추가된 부분 끝 ---
 
         if (synth && savedVoiceName !== null) {
-            // populateVoiceList()에서 처리
         }
     }
 
     // --- 유효성 검사 및 설정 적용 함수 ---
     function validateAndApplySettings() {
-        charsToChooseFrom = charsInput.value;
+        rawCharsInput = charsInput.value;
+        charsToChooseFrom = parseCharsInput(rawCharsInput);
+
         displayLength = parseInt(displayLengthInput.value);
         displayIntervalBars = parseInt(intervalBarsInput.value);
         useUniqueChars = uniqueCharsCheckbox.checked;
+        // --- 추가된 부분 ---
+        enableTts = enableTtsCheckbox.checked; // 설정 적용 시 음성 출력 여부 업데이트
+        // --- 추가된 부분 끝 ---
 
         const newBpm = parseInt(bpmInput.value);
         if (isNaN(newBpm) || newBpm < parseInt(bpmInput.min) || newBpm > parseInt(bpmInput.max)) {
@@ -176,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
         bpm = newBpm;
 
         if (charsToChooseFrom.length === 0) {
-            alert("원본 문자열을 입력해주세요!");
+            alert("원본 문자열을 입력해주세요! (쉼표로 구분)");
             return false;
         }
 
@@ -195,20 +219,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (useUniqueChars && displayLength > charsToChooseFrom.length) {
-            alert("중복 없는 문자를 선택한 경우, 표시 길이는 원본 문자열의 길이보다 길 수 없습니다. (최대 " + charsToChooseFrom.length + "자)");
+            alert("중복 없는 문자를 선택한 경우, 표시 길이는 원본 항목의 길이보다 길 수 없습니다. (최대 " + charsToChooseFrom.length + "개)");
             displayLengthInput.value = charsToChooseFrom.length;
             displayLength = charsToChooseFrom.length;
             return false;
         }
 
-        // --- 추가된 부분: TTS 속도 유효성 검사 ---
         const newTtsRate = parseFloat(ttsRateInput.value);
         if (isNaN(newTtsRate) || newTtsRate < parseFloat(ttsRateInput.min) || newTtsRate > parseFloat(ttsRateInput.max)) {
             alert(`발음 속도는 ${ttsRateInput.min}에서 ${ttsRateInput.max} 사이의 숫자여야 합니다!`);
-            ttsRateInput.value = ttsRate; // 이전 값으로 되돌림
+            ttsRateInput.value = ttsRate;
             return false;
         }
-        ttsRate = newTtsRate; // 유효한 경우 ttsRate 변수 업데이트
+        ttsRate = newTtsRate;
+
+        // --- 추가된 부분: 음성 출력 여부에 따라 목소리 선택/속도 입력 필드 비활성화/활성화 ---
+        voiceSelect.disabled = !enableTts;
+        ttsRateInput.disabled = !enableTts;
         // --- 추가된 부분 끝 ---
 
         saveSettings();
@@ -227,12 +254,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    charsInput.addEventListener('input', saveSettings);
+    charsInput.addEventListener('input', () => {
+        saveSettings();
+        rawCharsInput = charsInput.value;
+        charsToChooseFrom = parseCharsInput(rawCharsInput);
+    });
+
     displayLengthInput.addEventListener('input', saveSettings);
     intervalBarsInput.addEventListener('input', saveSettings);
     uniqueCharsCheckbox.addEventListener('change', saveSettings);
+    ttsRateInput.addEventListener('input', saveSettings);
     // --- 추가된 부분 ---
-    ttsRateInput.addEventListener('input', saveSettings); // TTS 속도 변경 시 저장
+    enableTtsCheckbox.addEventListener('change', () => {
+        enableTts = enableTtsCheckbox.checked; // 체크박스 변경 시 enableTts 변수 업데이트
+        voiceSelect.disabled = !enableTts; // 목소리 선택 드롭다운 활성화/비활성화
+        ttsRateInput.disabled = !enableTts; // TTS 속도 입력 필드 활성화/비활성화
+        saveSettings(); // 설정 저장
+        if (!enableTts && synth && synth.speaking) { // TTS 비활성화 시 현재 발음 중인 것이 있다면 중단
+            synth.cancel();
+        }
+    });
     // --- 추가된 부분 끝 ---
 
     applySettingsBtn.addEventListener('click', () => {
@@ -259,20 +300,24 @@ document.addEventListener('DOMContentLoaded', () => {
     function generateAndDisplayRandomString() {
         if (charsToChooseFrom.length === 0) {
             randomCharsOutput.textContent = "문자열 없음";
+            // --- 변경된 부분 ---
             if (synth && synth.speaking) synth.cancel();
+            // --- 변경된 부분 끝 ---
             return;
         }
 
-        let generatedString = '';
+        let generatedItems = [];
         if (useUniqueChars) {
             if (displayLength > charsToChooseFrom.length) {
-                randomCharsOutput.textContent = "오류: 원본 문자 부족";
-                console.error("Error: Not enough unique characters in source string for desired display length.");
+                randomCharsOutput.textContent = "오류: 원본 항목 부족";
+                console.error("Error: Not enough unique items in source for desired display length.");
+                // --- 변경된 부분 ---
                 if (synth && synth.speaking) synth.cancel();
+                // --- 변경된 부분 끝 ---
                 return;
             }
 
-            let sourceArray = charsToChooseFrom.split('');
+            let sourceArray = [...charsToChooseFrom];
             let result = [];
 
             for (let i = 0; i < displayLength; i++) {
@@ -280,22 +325,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 result.push(sourceArray[randomIndex]);
                 sourceArray.splice(randomIndex, 1);
             }
-            generatedString = result.join('');
+            generatedItems = result;
         } else {
             for (let i = 0; i < displayLength; i++) {
                 const randomIndex = Math.floor(Math.random() * charsToChooseFrom.length);
-                generatedString += charsToChooseFrom.charAt(randomIndex);
+                generatedItems.push(charsToChooseFrom[randomIndex]);
             }
         }
-        randomCharsOutput.textContent = generatedString;
+        randomCharsOutput.textContent = generatedItems.join(', ');
 
-        // --- TTS로 문자열 발음 (선택된 목소리 및 속도 적용) ---
-        if (synth && generatedString) {
+        // --- 변경된 부분: enableTts 여부에 따라 TTS 실행 ---
+        if (enableTts && synth && generatedItems.length > 0) {
             if (synth.speaking) {
                 synth.cancel();
             }
 
-            let textToSpeak = generatedString.split('').join('. ');
+            let textToSpeak = generatedItems.join('. ');
 
             const utterance = new SpeechSynthesisUtterance(textToSpeak);
             utterance.lang = 'ko-KR';
@@ -306,14 +351,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 utterance.voice = voices[0];
             }
 
-            // --- 변경된 부분: ttsRate 변수 사용 ---
-            utterance.rate = ttsRate; // 이제 입력 필드에서 가져온 ttsRate 변수 사용
-            // --- 변경된 부분 끝 ---
+            utterance.rate = ttsRate;
             utterance.pitch = TTS_PITCH;
 
             synth.speak(utterance);
+        } else if (!enableTts && synth && synth.speaking) { // TTS 비활성화 시 현재 발음 중인 것 중단
+             synth.cancel();
         }
-        // --- TTS 끝 ---
+        // --- 변경된 부분 끝 ---
     }
 
     // 메트로놈 시작 함수
